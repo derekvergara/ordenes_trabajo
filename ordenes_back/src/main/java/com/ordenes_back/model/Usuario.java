@@ -17,7 +17,7 @@ public class Usuario {
     @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false, unique = false)
+    @Column(nullable = false)
     private String correo; // para el login
 
     @Column(nullable = false)
@@ -27,9 +27,7 @@ public class Usuario {
     @JoinColumn(name = "rol_id", nullable = false)
     private Rol rol;
 
-    //aplicacion para el eliminado logico
-    @ManyToOne
-    @JoinColumn(name = "is_active", nullable = false)
+    // Aplicación para el eliminado lógico
+    @Column(name = "is_active", nullable = false)
     private boolean isActive = true;
-
 }

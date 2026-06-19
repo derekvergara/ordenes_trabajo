@@ -75,7 +75,7 @@ public class AuthController {
     @Operation(summary = "Login de usuarios", description = "Inicia sesion solo si el usuario está ACTIVO y obtiene el token JWT")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody AuthRequest request) {
-        // ⚠️ CAMBIO IMPORTANTE: Validamos que el usuario exista Y esté activo
+        // validamos que el usuario exista
         Optional<Usuario> usuarioOpt = userRepository.findByCorreoAndIsActiveTrue(request.getCorreo());
 
         if (usuarioOpt.isPresent()) {
