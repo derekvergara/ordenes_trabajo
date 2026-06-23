@@ -1,0 +1,33 @@
+<div class="login-background d-flex justify-content-center align-items-center vh-100">
+  <div class="login-overlay"></div>
+
+  <div class="login-box p-5 rounded-4 shadow-lg text-dark">
+    <h3 class="text-center fw-bold mb-2">INICIAR SESIÓN</h3>
+    <p class="text-center text-muted mb-4">Bienvenido, accede a tu cuenta para gestionar órdenes de trabajo</p>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="mb-4 position-relative">
+        <label for="correo" class="form-label">Correo</label>
+        <div class="input-wrapper">
+          <i class="bi bi-person-fill input-icon"></i>
+          <input type="email" id="correo" class="form-control input-with-icon"
+                 formControlName="correo" placeholder="e.g. admin@ordenes.com" />
+        </div>
+      </div>
+
+      <div class="mb-4 position-relative">
+        <label for="contrasena" class="form-label">Contraseña</label>
+        <div class="input-wrapper">
+          <i class="bi bi-lock-fill input-icon"></i>
+          <input type="password" id="contrasena" class="form-control input-with-icon"
+                 formControlName="contrasena" placeholder="••••••••" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn w-100 fw-semibold login-btn"
+              [disabled]="loginForm.invalid">
+        Iniciar Sesión
+      </button>
+    </form>
+  </div>
+</div>
