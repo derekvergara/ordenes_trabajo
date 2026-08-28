@@ -1,33 +1,46 @@
 <div class="login-background d-flex justify-content-center align-items-center vh-100">
   <div class="login-overlay"></div>
 
-  <div class="login-box p-5 rounded-4 shadow-lg text-dark">
+  <div class="login-box p-5 rounded-4 shadow-lg text-dark bg-white">
+    <div class="text-center mb-4">
+      <i class="bi bi-tools text-primary" style="font-size: 3rem;"></i>
+    </div>
     <h3 class="text-center fw-bold mb-2">INICIAR SESIÓN</h3>
-    <p class="text-center text-muted mb-4">Bienvenido, accede a tu cuenta para gestionar órdenes de trabajo</p>
+    <p class="text-center text-muted mb-4">Bienvenido, accede para gestionar órdenes</p>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="mb-4 position-relative">
-        <label for="correo" class="form-label">Correo</label>
-        <div class="input-wrapper">
-          <i class="bi bi-person-fill input-icon"></i>
-          <input type="email" id="correo" class="form-control input-with-icon"
-                 formControlName="correo" placeholder="e.g. admin@ordenes.com" />
+        <label for="correo" class="form-label fw-semibold">Correo Electrónico</label>
+        <div class="input-wrapper d-flex align-items-center border rounded px-3 py-2 bg-light">
+          <i class="bi bi-person-fill text-muted me-2"></i>
+          <input type="email" id="correo" class="form-control border-0 bg-transparent p-0"
+                 formControlName="correo" placeholder="e.g. admin@ordenes.com" style="box-shadow: none;" />
         </div>
       </div>
 
       <div class="mb-4 position-relative">
-        <label for="contrasena" class="form-label">Contraseña</label>
-        <div class="input-wrapper">
-          <i class="bi bi-lock-fill input-icon"></i>
-          <input type="password" id="contrasena" class="form-control input-with-icon"
-                 formControlName="contrasena" placeholder="••••••••" />
+        <label for="contrasena" class="form-label fw-semibold">Contraseña</label>
+        <div class="input-wrapper d-flex align-items-center border rounded px-3 py-2 bg-light">
+          <i class="bi bi-lock-fill text-muted me-2"></i>
+          <input type="password" id="contrasena" class="form-control border-0 bg-transparent p-0"
+                 formControlName="contrasena" placeholder="••••••••" style="box-shadow: none;" />
         </div>
       </div>
 
-      <button type="submit" class="btn w-100 fw-semibold login-btn"
+      <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm"
               [disabled]="loginForm.invalid">
         Iniciar Sesión
       </button>
+
+      <!-- Nuevos enlaces -->
+      <div class="d-flex flex-column text-center mt-3 gap-2">
+        <a routerLink="/registro" class="text-decoration-none fw-semibold text-primary hover-link">
+          ¿No tienes cuenta? Regístrate aquí
+        </a>
+        <a href="javascript:void(0)" class="text-decoration-none text-muted small hover-link">
+          ¿Olvidaste tu contraseña?
+        </a>
+      </div>
     </form>
   </div>
 </div>

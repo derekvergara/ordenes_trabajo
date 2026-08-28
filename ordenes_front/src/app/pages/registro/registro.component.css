@@ -1,12 +1,11 @@
 .login-background {
-  /* Fondo degradado moderno azul/gris */
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .login-box {
   width: 100%;
   max-width: 420px;
-  border-top: 5px solid #0d6efd; /* Línea de acento arriba */
+  border-top: 5px solid #0d6efd;
 }
 
 .hover-link:hover {

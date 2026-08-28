@@ -1,1 +1,15 @@
-<p>perfil works!</p>
+<app-navbar></app-navbar>
+
+<div class="perfil-container p-4">
+  <h2 class="titulo fw-bold mb-4">Mi Perfil</h2>
+
+  <div class="perfil-card shadow-sm p-4 rounded bg-white" *ngIf="usuario">
+    <p><strong>Nombre:</strong> {{ usuario.nombre }}</p>
+    <p><strong>Correo:</strong> {{ usuario.correo }}</p>
+    <p><strong>Rol:</strong> <span class="badge bg-primary">{{ usuario.rol | titlecase }}</span></p>
+  </div>
+
+  <div *ngIf="!usuario" class="cargando text-muted">
+    Cargando información del perfil...
+  </div>
+</div>

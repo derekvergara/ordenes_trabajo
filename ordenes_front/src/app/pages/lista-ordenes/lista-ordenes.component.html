@@ -1,1 +1,76 @@
-<p>lista-ordenes works!</p>
+<app-navbar></app-navbar>
+
+<div class="container mt-5 mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Gestión de Órdenes</h2>
+    <a routerLink="/form-orden" class="btn btn-primary fw-semibold shadow-sm">
+      <i class="bi bi-plus-circle me-2"></i> Nueva Orden
+    </a>
+  </div>
+
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-0">
+      
+      <div *ngIf="cargando" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Cargando órdenes...</p>
+      </div>
+
+      <div *ngIf="!cargando && ordenes.length === 0" class="text-center p-5">
+        <i class="bi bi-inbox fs-1 text-muted"></i>
+        <h5 class="mt-3 text-muted">No hay órdenes registradas</h5>
+        <p class="text-muted">Haz clic en "Nueva Orden" para comenzar.</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!cargando && ordenes.length > 0">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col" class="ps-4">ID</th>
+              <th scope="col">Cliente</th>
+              <th scope="col">Equipo</th>
+              <th scope="col">Estado</th>
+              <th scope="col">Costo</th>
+              <th scope="col" class="text-end pe-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orden of ordenes">
+              <td class="ps-4 fw-bold text-secondary">#{{ orden.id }}</td>
+              <td>
+                <div class="fw-semibold">{{ orden.cliente }}</div>
+                <div class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ orden.telefono }}</div>
+              </td>
+              <td>
+                <div>{{ orden.equipo }}</div>
+                <div class="text-muted small text-truncate" style="max-width: 200px;" title="{{ orden.danio }}">
+                  {{ orden.danio }}
+                </div>
+              </td>
+              <td>
+                <span class="badge" 
+                      [ngClass]="{
+                        'bg-warning text-dark': orden.estado === 'INGRESADO' || orden.estado === 'EN_REVISION',
+                        'bg-success': orden.estado === 'REPARADO',
+                        'bg-primary': orden.estado === 'ENTREGADO'
+                      }">
+                  {{ orden.estado }}
+                </span>
+              </td>
+              <td class="fw-semibold text-success">${{ orden.costoValor }}</td>
+              <td class="text-end pe-4">
+                <a [routerLink]="['/form-orden', orden.id]" class="btn btn-sm btn-outline-primary me-2" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <button (click)="eliminarOrden(orden.id)" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>

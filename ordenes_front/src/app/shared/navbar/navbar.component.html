@@ -1,1 +1,38 @@
-<p>navbar works!</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm mb-4" *ngIf="estaLogueado()">
+  <div class="container">
+    <a class="navbar-brand fw-bold d-flex align-items-center" routerLink="/lista-ordenes">
+      <i class="bi bi-tools text-primary me-2 fs-4"></i> 
+      Órdenes de Trabajo
+    </a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/lista-ordenes" routerLinkActive="active">
+            <i class="bi bi-card-list me-1"></i> Mis Órdenes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/form-orden" routerLinkActive="active">
+            <i class="bi bi-plus-circle me-1"></i> Nueva Orden
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/perfil" routerLinkActive="active">
+            <i class="bi bi-person-badge me-1"></i> Mi Perfil
+          </a>
+        </li>
+      </ul>
+      
+      <div class="d-flex align-items-center">
+        <button class="btn btn-outline-danger btn-sm fw-semibold d-flex align-items-center px-3 py-2" (click)="cerrarSesion()">
+          <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>

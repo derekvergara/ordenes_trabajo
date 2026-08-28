@@ -1,1 +1,72 @@
-<p>form-orden works!</p>
+<app-navbar></app-navbar>
+
+<div class="container mt-5 mb-5">
+  <div class="card shadow-lg border-0 rounded-4">
+    <div class="card-header bg-primary text-white py-3 rounded-top-4">
+      <h3 class="mb-0 text-center fw-bold">
+        {{ esEdicion ? 'Editar Orden de Trabajo' : 'Nueva Orden de Trabajo' }}
+      </h3>
+    </div>
+
+    <div class="card-body p-4 p-md-5">
+      <form [formGroup]="ordenForm" (ngSubmit)="guardarOrden()">
+        
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombre del Cliente *</label>
+            <input type="text" class="form-control" formControlName="cliente" placeholder="Ej. Juan Pérez">
+          </div>
+          <div class="col-md-6 mt-3 mt-md-0">
+            <label class="form-label fw-semibold">Teléfono *</label>
+            <input type="text" class="form-control" formControlName="telefono" placeholder="Ej. 0991234567">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Equipo a Reparar *</label>
+            <input type="text" class="form-control" formControlName="equipo" placeholder="Ej. Laptop HP Pavilion">
+          </div>
+          <div class="col-md-6 mt-3 mt-md-0">
+            <label class="form-label fw-semibold">Descripción del Daño *</label>
+            <input type="text" class="form-control" formControlName="danio" placeholder="Ej. No enciende, pantalla rota">
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Estado de Reparación *</label>
+            <select class="form-select" formControlName="estado">
+              <option value="INGRESADO">Ingresado</option>
+              <option value="EN_REVISION">En Revisión</option>
+              <option value="REPARADO">Reparado</option>
+              <option value="ENTREGADO">Entregado</option>
+            </select>
+          </div>
+          <div class="col-md-6 mt-3 mt-md-0">
+            <label class="form-label fw-semibold">Costo Estimado ($) *</label>
+            <input type="number" class="form-control" formControlName="costoValor" min="0" step="0.01">
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold">Repuestos Necesarios</label>
+          <input type="text" class="form-control" formControlName="repuestos" placeholder="Ej. Batería nueva, cargador">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Observaciones Internas</label>
+          <textarea class="form-control" formControlName="observaciones" rows="3" placeholder="Detalles adicionales sobre el equipo o el trato con el cliente..."></textarea>
+        </div>
+
+        <div class="d-flex justify-content-end gap-3 mt-4">
+          <button type="button" class="btn btn-secondary px-4 fw-semibold" routerLink="/lista-ordenes">Cancelar</button>
+          <button type="submit" class="btn btn-primary px-4 fw-semibold" [disabled]="ordenForm.invalid">
+            <i class="bi bi-save me-2"></i> Guardar Orden
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

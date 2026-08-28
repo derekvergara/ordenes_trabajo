@@ -1,0 +1,54 @@
+<div class="login-background d-flex justify-content-center align-items-center vh-100">
+  <div class="login-overlay"></div>
+
+  <div class="login-box p-5 rounded-4 shadow-lg text-dark bg-white">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-plus text-primary" style="font-size: 3rem;"></i>
+    </div>
+    <h3 class="text-center fw-bold mb-2">CREAR CUENTA</h3>
+    <p class="text-center text-muted mb-4">Regístrate como técnico para acceder</p>
+
+    <form [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+      <!-- Nombre -->
+      <div class="mb-3 position-relative">
+        <label for="nombre" class="form-label fw-semibold">Nombre Completo</label>
+        <div class="input-wrapper d-flex align-items-center border rounded px-3 py-2 bg-light">
+          <i class="bi bi-person text-muted me-2"></i>
+          <input type="text" id="nombre" class="form-control border-0 bg-transparent p-0"
+                 formControlName="nombre" placeholder="Ej. Juan Pérez" style="box-shadow: none;" />
+        </div>
+      </div>
+
+      <!-- Correo -->
+      <div class="mb-3 position-relative">
+        <label for="correo" class="form-label fw-semibold">Correo Electrónico</label>
+        <div class="input-wrapper d-flex align-items-center border rounded px-3 py-2 bg-light">
+          <i class="bi bi-envelope text-muted me-2"></i>
+          <input type="email" id="correo" class="form-control border-0 bg-transparent p-0"
+                 formControlName="correo" placeholder="Ej. tecnico@ordenes.com" style="box-shadow: none;" />
+        </div>
+      </div>
+
+      <!-- Contraseña -->
+      <div class="mb-4 position-relative">
+        <label for="contrasena" class="form-label fw-semibold">Contraseña</label>
+        <div class="input-wrapper d-flex align-items-center border rounded px-3 py-2 bg-light">
+          <i class="bi bi-lock text-muted me-2"></i>
+          <input type="password" id="contrasena" class="form-control border-0 bg-transparent p-0"
+                 formControlName="contrasena" placeholder="Mínimo 6 caracteres" style="box-shadow: none;" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 fw-bold py-2 mb-3 shadow-sm"
+              [disabled]="registroForm.invalid">
+        Registrarse
+      </button>
+
+      <div class="text-center mt-3">
+        <a routerLink="/login" class="text-decoration-none fw-semibold text-primary hover-link">
+          ¿Ya tienes cuenta? Inicia sesión aquí
+        </a>
+      </div>
+    </form>
+  </div>
+</div>

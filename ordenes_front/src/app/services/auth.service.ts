@@ -5,24 +5,31 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 
 interface LoginResponse {
-  token: string;
+  access_token: string;
+  token_type: string;
+  usuario: {
+    id: string;
+    correo: string;
+    rol: string;
+  };
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // Ajustado a la URL de tu entorno local de Spring Boot que probamos en Swagger
-  private apiSpring = 'http://localhost:8080/api/auth'; 
+  // Ajustado al backend local de Spring Boot actual
+  private apiSpring = 'http://localhost:8080/api/auth';  
   private tokenKey = 'token';
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  login(correo: string, password: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiSpring}/login`, { correo, password })
+  login(correo: string, password: string): Observable<any> {
+    return this.http.post<any>(`${this.apiSpring}/login`, { correo, password })
       .pipe(
         tap((res) => {
-          localStorage.setItem(this.tokenKey, res.token);  // Guarda el token JWT
+          // Asegúrate de que "res.token" coincide con lo que devuelve tu backend
+          localStorage.setItem(this.tokenKey, res.token);  
         })
       );
   }
