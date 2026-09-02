@@ -33,26 +33,29 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults()) // Nueva sintaxis Spring Boot 3
                 .authorizeHttpRequests(auth -> auth
-                        // permitimos login y registro
-                        .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
-                        // permitimos Swagger para los endpoints
-                        .requestMatchers(
-                                "/swagger-ui.html",
-                                "/swagger-ui/**",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/api-docs/**"
-                        ).permitAll()
+                                // permitimos login y registro
+                                .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                                // permitimos Swagger para los endpoints
+                                .requestMatchers(
+                                        "/swagger-ui.html",
+                                        "/swagger-ui/**",
+                                        "/v3/api-docs",
+                                        "/v3/api-docs/**",
+                                        "/api-docs/**"
+                                ).permitAll()
 
-                        // rutas de los endpoints
-                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
-                        .requestMatchers("/api/user/**").hasAnyAuthority("ROLE_USUARIO", "ROLE_ADMIN")
+                                // rutas de los endpoints
+                                .requestMatchers("/api/admin/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
+                                .requestMatchers("/api/user/**").hasAnyAuthority("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN")
 
-                        // ruta de las ordenes para el siguiente controlador
-                        .requestMatchers("/api/ordenes/**").hasAnyAuthority("ROLE_USUARIO", "ROLE_ADMIN")
+                                // Rutas de órdenes con métodos HTTP nativos
+                                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/ordenes", "/api/ordenes/**").hasAnyAuthority("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN")
+                                .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/ordenes", "/api/ordenes/**").hasAnyAuthority("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN")
+                                .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/ordenes/**").hasAnyAuthority("USER", "ROLE_USER", "ADMIN", "ROLE_ADMIN")
+                                .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/ordenes/**").hasAnyAuthority("ADMIN", "ROLE_ADMIN")
 
-                        // obligatorio autenticacion
-                        .anyRequest().authenticated()
+                                // obligatorio autenticacion
+                                .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

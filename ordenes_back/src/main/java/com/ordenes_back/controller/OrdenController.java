@@ -30,6 +30,16 @@ public class OrdenController {
         return ResponseEntity.ok(ordenRepository.findByIsActiveTrue());
     }
 
+    @Operation(summary = "Obtener orden por ID", description = "Devuelve una orden específica por su ID")
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
+        Optional<Ordenes> orden = ordenRepository.findById(id);
+        if (orden.isPresent() && orden.get().isActive()) {
+            return ResponseEntity.ok(orden.get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @Operation(summary = "Crear orden", description = "Crea una nueva orden de trabajo")
     @PostMapping
     public ResponseEntity<?> crearOrden(@RequestBody OrdenRequest request) {

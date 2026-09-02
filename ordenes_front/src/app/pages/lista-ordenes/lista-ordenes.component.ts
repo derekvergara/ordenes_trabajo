@@ -43,7 +43,7 @@ export class ListaOrdenesComponent implements OnInit {
   eliminarOrden(id: number): void {
     Swal.fire({
       title: '¿Estás seguro?',
-      text: "Esta orden se marcará como inactiva (eliminación lógica).",
+      text: "De eliminar esta orden.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',

@@ -61,7 +61,13 @@ export class FormOrdenComponent implements OnInit {
       return;
     }
 
-    const datosOrden = this.ordenForm.value;
+    // Creamos una copia de los valores del formulario
+    const datosOrden = { ...this.ordenForm.value };
+
+    // Si es creación, asignamos la fecha y hora actuales automáticamente
+    if (!this.esEdicion) {
+      datosOrden.fechaIngreso = new Date().toISOString(); 
+    }
 
     if (this.esEdicion && this.ordenId) {
       this.ordenService.actualizarOrden(this.ordenId, datosOrden).subscribe({
