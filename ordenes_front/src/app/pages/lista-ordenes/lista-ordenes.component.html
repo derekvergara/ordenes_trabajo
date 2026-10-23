@@ -8,6 +8,73 @@
     </a>
   </div>
 
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <form class="row g-2 align-items-end" (ngSubmit)="buscar()">
+        <div class="col-md-3">
+          <label class="form-label fw-semibold">Buscar por</label>
+          <select
+            class="form-select"
+            [(ngModel)]="tipoFiltro"
+            name="tipoFiltro"
+            (change)="cambiarTipo()"
+          >
+            <option value="cliente">Cliente</option>
+            <option value="estado">Estado</option>
+            <option value="id">N.º de orden</option>
+          </select>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">
+            {{
+              tipoFiltro === "estado"
+                ? "Estado"
+                : tipoFiltro === "id"
+                  ? "Número"
+                  : "Nombre del cliente"
+            }}
+          </label>
+
+          <select
+            *ngIf="tipoFiltro === 'estado'; else campoTexto"
+            class="form-select"
+            [(ngModel)]="estadoSeleccionado"
+            name="estado"
+          >
+            <option value="INGRESADO">Ingresado</option>
+            <option value="EN_REVISION">En Revisión</option>
+            <option value="REPARADO">Reparado</option>
+            <option value="ENTREGADO">Entregado</option>
+          </select>
+
+          <ng-template #campoTexto>
+            <input
+              class="form-control"
+              [type]="tipoFiltro === 'id' ? 'number' : 'text'"
+              [placeholder]="tipoFiltro === 'id' ? 'Ej. 1' : 'Ej. Andy'"
+              [(ngModel)]="textoBusqueda"
+              name="texto"
+            />
+          </ng-template>
+        </div>
+
+        <div class="col-md-3 d-flex gap-2">
+          <button type="submit" class="btn btn-primary flex-fill">
+            <i class="bi bi-search me-1"></i> Buscar
+          </button>
+          <button
+            type="button"
+            class="btn btn-outline-secondary flex-fill"
+            (click)="limpiar()"
+          >
+            Limpiar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-body p-0">
       <div *ngIf="cargando" class="text-center p-5">
@@ -93,6 +160,11 @@
                 >
                   <i class="bi bi-trash"></i>
                 </button>
+              </td>
+            </tr>
+            <tr *ngIf="ordenes.length === 0">
+              <td colspan="8" class="text-center text-muted py-4">
+                No se encontraron órdenes con ese filtro.
               </td>
             </tr>
           </tbody>
