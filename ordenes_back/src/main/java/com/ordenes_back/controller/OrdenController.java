@@ -2,120 +2,75 @@ package com.ordenes_back.controller;
 
 import com.ordenes_back.dto.OrdenRequest;
 import com.ordenes_back.model.Ordenes;
-import com.ordenes_back.repository.OrdenRepository;
+import com.ordenes_back.service.OrdenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
+// El controlador ya no toca el repositorio: solo recibe la peticion,
+// llama al servicio y devuelve la respuesta (responsabilidad unica).
+// El CORS ya esta en SecurityConfig, por eso quitamos @CrossOrigin.
 @RestController
 @RequestMapping("/api/ordenes")
-@CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Ordenes de Trabajo", description = "Endpoints protegidos para gestionar las reparaciones")
 @SecurityRequirement(name = "bearerAuth")
 public class OrdenController {
-    @Autowired
-    private OrdenRepository ordenRepository;
+
+    private final OrdenService ordenService;
+
+    public OrdenController(OrdenService ordenService) {
+        this.ordenService = ordenService;
+    }
 
     @Operation(summary = "Listar ordenes", description = "Devuelve todas las ordenes activas")
     @GetMapping
     public ResponseEntity<List<Ordenes>> obtenerTodas() {
-        // Usamos el método que ignora las eliminadas lógicamente
-        return ResponseEntity.ok(ordenRepository.findByIsActiveTrue());
+        return ResponseEntity.ok(ordenService.listarActivas());
     }
 
-    @Operation(summary = "Obtener orden por ID", description = "Devuelve una orden específica por su ID")
+    @Operation(summary = "Obtener orden por ID")
     @GetMapping("/{id}")
-    public ResponseEntity<?> obtenerPorId(@PathVariable Long id) {
-        Optional<Ordenes> orden = ordenRepository.findById(id);
-        if (orden.isPresent() && orden.get().isActive()) {
-            return ResponseEntity.ok(orden.get());
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Ordenes> obtenerPorId(@PathVariable Long id) {
+        return ResponseEntity.ok(ordenService.obtenerActiva(id));
     }
 
-    @Operation(summary = "Crear orden", description = "Crea una nueva orden de trabajo")
+    @Operation(summary = "Crear orden")
     @PostMapping
-    public ResponseEntity<?> crearOrden(@RequestBody OrdenRequest request) {
-        Ordenes orden = new Ordenes();
-        orden.setFechaIngreso(request.getFechaIngreso() != null ? request.getFechaIngreso() : LocalDate.now());
-        orden.setFechaSalida(request.getFechaSalida());
-        orden.setCliente(request.getCliente());
-        orden.setTelefono(request.getTelefono());
-        orden.setEquipo(request.getEquipo());
-        orden.setDanio(request.getDanio());
-        orden.setCostoValor(request.getCostoValor());
-        orden.setEstado(request.getEstado());
-        orden.setRepuestos(request.getRepuestos());
-        orden.setObservaciones(request.getObservaciones());
-        // isActive ya es true por defecto en el modelo
-
-        Ordenes guardada = ordenRepository.save(orden);
-        return ResponseEntity.ok(guardada);
+    public ResponseEntity<Ordenes> crearOrden(@RequestBody OrdenRequest request) {
+        return ResponseEntity.ok(ordenService.crear(request));
     }
 
-    @Operation(summary = "Actualizar orden", description = "Modifica los datos de una orden existente")
+    @Operation(summary = "Actualizar orden")
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizarOrden(@PathVariable Long id, @RequestBody OrdenRequest request) {
-        Optional<Ordenes> optOrden = ordenRepository.findById(id);
-
-        if (optOrden.isPresent() && optOrden.get().isActive()) {
-            Ordenes orden = optOrden.get();
-            if (request.getFechaIngreso() != null){
-                orden.setFechaIngreso(request.getFechaIngreso());
-            }
-            if (request.getFechaSalida() != null){
-                orden.setFechaSalida(request.getFechaSalida());
-            }else if ("ENTREGADO".equals(request.getEstado()) && orden.getFechaSalida() == null){
-                orden.setFechaSalida(LocalDate.now());
-            }
-            orden.setCliente(request.getCliente());
-            orden.setTelefono(request.getTelefono());
-            orden.setEquipo(request.getEquipo());
-            orden.setDanio(request.getDanio());
-            orden.setCostoValor(request.getCostoValor());
-            orden.setEstado(request.getEstado());
-            orden.setRepuestos(request.getRepuestos());
-            orden.setObservaciones(request.getObservaciones());
-
-            return ResponseEntity.ok(ordenRepository.save(orden));
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Ordenes> actualizarOrden(@PathVariable Long id, @RequestBody OrdenRequest request) {
+        return ResponseEntity.ok(ordenService.actualizar(id, request));
     }
 
-    @Operation(summary = "Eliminar orden", description = "Cambia el estado isActive a false en lugar de borrarla")
+    @Operation(summary = "Eliminar orden", description = "Eliminacion logica (isActive = false)")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')") // asignamos que el admin pueda eliminar las ordenes
-    public ResponseEntity<?> eliminarOrden(@PathVariable Long id) {
-        Optional<Ordenes> optOrden = ordenRepository.findById(id);
-
-        if (optOrden.isPresent()) {
-            Ordenes orden = optOrden.get();
-            orden.setActive(false); // eliminacion logica
-            ordenRepository.save(orden);
-            return ResponseEntity.ok().body("{\"mensaje\": \"Orden eliminada correctamente\"}");
-        }
-        return ResponseEntity.notFound().build();
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<Map<String, String>> eliminarOrden(@PathVariable Long id) {
+        ordenService.eliminar(id);
+        return ResponseEntity.ok(Map.of("mensaje", "Orden eliminada correctamente"));
     }
 
-    // --- ENDPOINTS DE FILTRADO ---
+    // --- FILTROS ---
 
-    @Operation(summary = "Buscar por cliente", description = "Filtra ordenes por nombre del cliente")
+    @Operation(summary = "Buscar por cliente")
     @GetMapping("/buscar/cliente")
     public ResponseEntity<List<Ordenes>> buscarPorCliente(@RequestParam String nombre) {
-        return ResponseEntity.ok(ordenRepository.findByClienteContainingIgnoreCaseAndIsActiveTrue(nombre));
+        return ResponseEntity.ok(ordenService.buscarPorCliente(nombre));
     }
 
-    @Operation(summary = "Buscar por estado", description = "Filtra ordenes por estado (ej. PENDIENTE, FINALIZADO)")
+    @Operation(summary = "Buscar por estado")
     @GetMapping("/buscar/estado")
     public ResponseEntity<List<Ordenes>> buscarPorEstado(@RequestParam String estado) {
-        return ResponseEntity.ok(ordenRepository.findByEstadoAndIsActiveTrue(estado));
+        return ResponseEntity.ok(ordenService.buscarPorEstado(estado));
     }
 }
