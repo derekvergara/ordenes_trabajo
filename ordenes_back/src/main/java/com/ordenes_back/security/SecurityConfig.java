@@ -35,6 +35,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 // permitimos login y registro
                                 .requestMatchers("/api/auth/register", "/api/auth/login").permitAll()
+                                .requestMatchers("/error").permitAll()
+                                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll()
                                 // permitimos Swagger para los endpoints
                                 .requestMatchers(
                                         "/swagger-ui.html",

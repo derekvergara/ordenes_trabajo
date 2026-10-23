@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,7 +45,7 @@ public class OrdenController {
     @PostMapping
     public ResponseEntity<?> crearOrden(@RequestBody OrdenRequest request) {
         Ordenes orden = new Ordenes();
-        orden.setFechaIngreso(request.getFechaIngreso());
+        orden.setFechaIngreso(request.getFechaIngreso() != null ? request.getFechaIngreso() : LocalDate.now());
         orden.setFechaSalida(request.getFechaSalida());
         orden.setCliente(request.getCliente());
         orden.setTelefono(request.getTelefono());
@@ -67,8 +68,14 @@ public class OrdenController {
 
         if (optOrden.isPresent() && optOrden.get().isActive()) {
             Ordenes orden = optOrden.get();
-            orden.setFechaIngreso(request.getFechaIngreso());
-            orden.setFechaSalida(request.getFechaSalida());
+            if (request.getFechaIngreso() != null){
+                orden.setFechaIngreso(request.getFechaIngreso());
+            }
+            if (request.getFechaSalida() != null){
+                orden.setFechaSalida(request.getFechaSalida());
+            }else if ("ENTREGADO".equals(request.getEstado()) && orden.getFechaSalida() == null){
+                orden.setFechaSalida(LocalDate.now());
+            }
             orden.setCliente(request.getCliente());
             orden.setTelefono(request.getTelefono());
             orden.setEquipo(request.getEquipo());

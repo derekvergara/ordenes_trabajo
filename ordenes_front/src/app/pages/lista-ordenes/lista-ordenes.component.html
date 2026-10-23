@@ -10,7 +10,6 @@
 
   <div class="card shadow-sm border-0 rounded-4">
     <div class="card-body p-0">
-      
       <div *ngIf="cargando" class="text-center p-5">
         <div class="spinner-border text-primary" role="status"></div>
         <p class="mt-2 text-muted">Cargando órdenes...</p>
@@ -29,7 +28,9 @@
               <th scope="col" class="ps-4">ID</th>
               <th scope="col">Cliente</th>
               <th scope="col">Equipo</th>
+              <th scope="col">Fecha Ingreso</th>
               <th scope="col">Estado</th>
+              <th scope="col">Fecha Entregado</th>
               <th scope="col">Costo</th>
               <th scope="col" class="text-end pe-4">Acciones</th>
             </tr>
@@ -39,30 +40,57 @@
               <td class="ps-4 fw-bold text-secondary">#{{ orden.id }}</td>
               <td>
                 <div class="fw-semibold">{{ orden.cliente }}</div>
-                <div class="text-muted small"><i class="bi bi-telephone me-1"></i>{{ orden.telefono }}</div>
-              </td>
-              <td>
-                <div>{{ orden.equipo }}</div>
-                <div class="text-muted small text-truncate" style="max-width: 200px;" title="{{ orden.danio }}">
-                  {{ orden.danio }}
+                <div class="text-muted small">
+                  <i class="bi bi-telephone me-1"></i>{{ orden.telefono }}
                 </div>
               </td>
               <td>
-                <span class="badge" 
-                      [ngClass]="{
-                        'bg-warning text-dark': orden.estado === 'INGRESADO' || orden.estado === 'EN_REVISION',
-                        'bg-success': orden.estado === 'REPARADO',
-                        'bg-primary': orden.estado === 'ENTREGADO'
-                      }">
+                <div>{{ orden.equipo }}</div>
+                <div
+                  class="text-muted small text-truncate"
+                  style="max-width: 200px"
+                  title="{{ orden.danio }}"
+                >
+                  {{ orden.danio }}
+                </div>
+              </td>
+              <td>{{ orden.fechaIngreso | date: "dd/MM/yyyy" }}</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-warning text-dark':
+                      orden.estado === 'INGRESADO' ||
+                      orden.estado === 'EN_REVISION',
+                    'bg-success': orden.estado === 'REPARADO',
+                    'bg-primary': orden.estado === 'ENTREGADO',
+                  }"
+                >
                   {{ orden.estado }}
                 </span>
               </td>
+              <td>
+                <span *ngIf="orden.fechaSalida; else pendiente">
+                  {{ orden.fechaSalida | date: "dd/MM/yyyy" }}
+                </span>
+                <ng-template #pendiente>
+                  <span class="text-muted">—</span>
+                </ng-template>
+              </td>
               <td class="fw-semibold text-success">${{ orden.costoValor }}</td>
               <td class="text-end pe-4">
-                <a [routerLink]="['/form-orden', orden.id]" class="btn btn-sm btn-outline-primary me-2" title="Editar">
+                <a
+                  [routerLink]="['/form-orden', orden.id]"
+                  class="btn btn-sm btn-outline-primary me-2"
+                  title="Editar"
+                >
                   <i class="bi bi-pencil"></i>
                 </a>
-                <button (click)="eliminarOrden(orden.id)" class="btn btn-sm btn-outline-danger" title="Eliminar">
+                <button
+                  (click)="eliminarOrden(orden.id)"
+                  class="btn btn-sm btn-outline-danger"
+                  title="Eliminar"
+                >
                   <i class="bi bi-trash"></i>
                 </button>
               </td>
@@ -70,7 +98,6 @@
           </tbody>
         </table>
       </div>
-
     </div>
   </div>
 </div>
