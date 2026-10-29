@@ -26,8 +26,11 @@
             <i class="bi bi-person-badge me-1"></i> Mi Perfil
           </a>
         </li>
-      </ul>
-      
+        <li class="nav-item" *ngIf="esAdmin()">
+          <a class="nav-link" routerLink="/admin-usuarios" routerLinkActive="active">
+            <i class="bi bi-people me-1"></i> Administración de Usuarios
+          </a>
+      </ul>  
       <div class="d-flex align-items-center">
         <button class="btn btn-outline-danger btn-sm fw-semibold d-flex align-items-center px-3 py-2" (click)="cerrarSesion()">
           <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión

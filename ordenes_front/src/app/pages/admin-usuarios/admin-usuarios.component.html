@@ -1,0 +1,119 @@
+<app-navbar></app-navbar>
+
+<div class="container mt-5 mb-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Administración de Usuarios</h2>
+  </div>
+
+  <!-- FORMULARIO DE EDICIÓN (solo aparece al pulsar "Editar") -->
+  <div *ngIf="seleccionado" class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-header bg-primary text-white py-3 rounded-top-4">
+      <h5 class="mb-0 fw-bold">
+        Editando: {{ seleccionado.nombre }}
+        <span class="fw-normal small">({{ seleccionado.correo }})</span>
+      </h5>
+    </div>
+
+    <div class="card-body p-4">
+      <div *ngIf="esYo(seleccionado)" class="alert alert-info py-2">
+        <i class="bi bi-info-circle me-1"></i>
+        Esta es tu cuenta: no puedes cambiar tu propio rol ni desactivarte.
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="guardar()">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Nombre *</label>
+            <input type="text" class="form-control" formControlName="nombre">
+          </div>
+          <div class="col-md-6 mt-3 mt-md-0">
+            <label class="form-label fw-semibold">Nueva contraseña</label>
+            <input type="password" class="form-control" formControlName="password"
+                   placeholder="Déjalo vacío para no cambiarla" autocomplete="new-password">
+            <div *ngIf="form.get('password')?.errors?.['minlength']" class="text-danger small mt-1">
+              Mínimo 6 caracteres
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <label class="form-label fw-semibold">Rol *</label>
+            <select class="form-select" formControlName="rolId">
+              <option *ngFor="let r of roles" [ngValue]="r.id">{{ nombreRol(r.nombre) }}</option>
+            </select>
+          </div>
+          <div class="col-md-6 mt-3 mt-md-0">
+            <label class="form-label fw-semibold d-block">Estado</label>
+            <div class="form-check form-switch mt-2">
+              <input class="form-check-input" type="checkbox" role="switch"
+                     id="activo" formControlName="activo">
+              <label class="form-check-label" for="activo">
+                {{ form.get('activo')?.value ? 'Activo' : 'Desactivado (no podrá iniciar sesión)' }}
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-3">
+          <button type="button" class="btn btn-secondary px-4" (click)="cancelar()">Cancelar</button>
+          <button type="submit" class="btn btn-primary px-4" [disabled]="form.invalid || guardando">
+            <span *ngIf="guardando" class="spinner-border spinner-border-sm me-2"></span>
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- LISTA DE USUARIOS -->
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-0">
+      <div *ngIf="cargando" class="text-center p-5">
+        <div class="spinner-border text-primary" role="status"></div>
+        <p class="mt-2 text-muted">Cargando usuarios...</p>
+      </div>
+
+      <div class="table-responsive" *ngIf="!cargando">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th class="ps-4">ID</th>
+              <th>Nombre</th>
+              <th>Correo</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th class="text-end pe-4">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let u of usuarios" [class.text-muted]="!u.activo">
+              <td class="ps-4 fw-bold text-secondary">#{{ u.id }}</td>
+              <td class="fw-semibold">
+                {{ u.nombre }}
+                <span *ngIf="esYo(u)" class="badge bg-secondary ms-1">Tú</span>
+              </td>
+              <td>{{ u.correo }}</td>
+              <td>
+                <span class="badge"
+                      [ngClass]="u.rolNombre.toUpperCase().includes('ADMIN') ? 'bg-dark' : 'bg-info text-dark'">
+                  {{ nombreRol(u.rolNombre) }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="u.activo ? 'bg-success' : 'bg-danger'">
+                  {{ u.activo ? 'Activo' : 'Desactivado' }}
+                </span>
+              </td>
+              <td class="text-end pe-4">
+                <button class="btn btn-sm btn-outline-primary" (click)="editar(u)" title="Editar">
+                  <i class="bi bi-pencil"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

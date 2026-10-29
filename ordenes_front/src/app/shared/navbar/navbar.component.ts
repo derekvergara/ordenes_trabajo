@@ -2,6 +2,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router , RouterModule } from '@angular/router';
+import { RolService } from '../../services/rol.service';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -14,6 +15,7 @@ import { AuthService } from '../../services/auth.service';
 export class NavbarComponent {
   private router = inject(Router);
   private auth = inject(AuthService);
+  private rolService = inject(RolService);
 
   cerrarSesion() {
     this.auth.logout();
@@ -22,5 +24,9 @@ export class NavbarComponent {
 
   estaLogueado(): boolean {
     return this.auth.isAuthenticated();
+  }
+  
+   esAdmin(): boolean {                     
+    return this.rolService.esAdmin();
   }
 }
